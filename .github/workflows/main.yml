@@ -1,0 +1,33 @@
+name: Build example
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      release:
+        description: "Release"
+        required: true
+        default: false
+        type: boolean
+
+jobs:
+  download-upload:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      
+    - name: Clone repository
+      run: git clone https://android.googlesource.com/toolchain/llvm-project/+/4c603efb0cca074e9238af8b4106c30add4418f6 cloned_repo
+      
+    - name: Upload to Another Location
+      run: |
+        zip -r cloned_repo.zip ./*
+
+    - name: Upload update
+      uses: actions/upload-artifact@v3
+      with:
+        name: update
+        path: ./cloned_repo.zip
+
